@@ -1,0 +1,53 @@
+
+import JAVA.util.List.List;
+import JAVA.util.List.ArrayList;
+/**
+ * Array List implementations 
+ * */
+public class Sample_01 {
+	public static void main(String[] args) {
+		List<String> al = new ArrayList<String>();
+		al.add("one");
+		al.add("Two");
+		al.add("3");
+		al.add("4");
+		al.add("5");
+		al.add("6");
+		al.add("7");
+		al.add("8");
+		al.add("9");
+		al.add("10");
+		al.add("1");
+		al.add("1");
+		al.add("1");
+		al.add("2");
+		al.add("3");
+		System.out.println(al);
+		System.out.println(al.get(-1));
+		al.set(0, "99");
+		System.out.println(al);
+		List <String> al2 = al;
+		al2.add("1");
+		al.add("1");
+		System.out.println(al2+""+al);
+		
+		
+		System.out.println((al==al2) +" " + (al == al));
+		System.out.println(al.indexOf("1"));
+		al.replaceAtEnd("1" , "ONE");
+		System.out.println(al);
+		al.replaceAll("1" , "one");
+		System.out.println(al);
+		al.deleteAt(1);
+		System.out.println(al);
+		al.deleteAtEnd("one");
+		System.out.println(al);
+		al.deleteAll("one");
+		System.out.println(al);
+		al.inserAt(0, "name");
+		al.reversed();
+		System.out.println(al);
+		al.reversedSort();
+		System.out.println(al);
+	}
+}

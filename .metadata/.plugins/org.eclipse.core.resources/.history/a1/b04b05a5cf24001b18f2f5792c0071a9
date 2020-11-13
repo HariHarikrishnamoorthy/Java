@@ -1,0 +1,283 @@
+package JAVA.util.List;
+
+import JAVA.util.Exceptions.IndexOutOfBound;
+
+final public class LinkedList <E> implements List<E>{
+	
+	private Node Head = null;
+	private Node Tail = null;
+	private int length = 0;
+	public LinkedList(){}
+	public LinkedList(Object item){
+		add(item);
+	}
+	public LinkedList(Object[] elements){
+		add(elements);
+	}
+	
+	public void add(Object item){ 
+		if(this.Head == null) {
+			this.Head  = new Node(item);
+			this.Tail = this.Head;
+			this.length++;
+		} else {
+			Node newNode = new Node(item);
+			newNode.setPrev(this.Tail);
+			this.Tail.setNext(newNode);
+			this.Tail = newNode;
+			this.length++;
+		}
+	}
+	public void add(Object[] elements){
+		for(Object item: elements) {
+			add(item);
+		}
+	}
+	public int size(){
+		return this.length;
+	}
+	@SuppressWarnings("unchecked")
+	public E get(int index){
+		if(this.length <= index ||  index < 0 )
+		{
+			try {
+				throw new IndexOutOfBound("Length of the List is "+this.length);
+			} catch (IndexOutOfBound e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		Node temp = this.Head;
+		for(int ind=0;ind<index; ind++)
+			temp = temp.getNext();
+		return (E) temp;
+	}
+	public void set(int index, Object value){
+		Node temp = (Node) get(index);
+		temp.setData(value);
+	}
+	public int indexOf(Object data ){
+		Node temp = this.Head;
+		for(int index=0;index < this.length; index++) {
+			if(temp.toString().equals(data.toString()))
+				return index;
+			temp = temp.getNext();
+		}
+		return -1;
+	}
+	public int lastIndexOf(Object data){
+		Node temp = this.Tail;
+		for(int index=this.length-1;index >=0; index--) {
+			if(temp.toString().equals(data.toString()))
+				return index;
+			temp = temp.getPrev();
+		}
+		return -1;
+	}
+	
+	protected void insertAtBeggining(Object data){
+		Node newNode = new Node(data);
+		newNode.next = Head;
+		Head.prev = newNode;
+		Head = newNode;
+		this.length += 1;
+	}
+	protected boolean insertAtAfter(Object data, Object prev){
+		Node newNode = new Node(data), temp = this.Head; 
+		while (temp != null){
+			if(temp.getData() == prev|| prev.toString().equals(temp.toString()) ) {
+				newNode.setNext(temp.getNext());
+				newNode.setPrev(temp);
+				temp.getNext().setPrev(newNode);
+				temp.setNext(newNode);
+				this.length +=1 ;
+				return true;
+			}
+			temp = temp.next;
+		}
+		return false;
+	}
+
+	
+	public boolean inserAt(int index, Object element){
+		if(this.length < index ||  index < 0 )
+		{
+			try {
+				throw new IndexOutOfBound("Length of the List is "+this.length);
+			} catch (IndexOutOfBound e) {
+				e.printStackTrace();
+			}
+			return false ;
+		}
+		if(index == 0) {
+			this.insertAtBeggining(element);
+			return true;
+		}
+		else if(index == this.length) {
+			this.add(element);
+			return true ;
+		}
+		Node temp = this.Head;
+		for(int ind=0;ind<index-1;ind++)
+			temp = temp.getNext();
+		return this.insertAtAfter(element, temp);
+	}
+	public boolean replace(Object replaceItem, Object newItem){
+		if(this.Head.getData() == replaceItem) {
+			this.Head.setData(newItem);
+			return true;
+		}
+		Node temp = this.Head.getNext();
+		while(temp != null ){
+			if(temp.getData() == replaceItem){
+				temp.setData(newItem); 
+				return true;
+			}   temp = temp.getNext();
+		}
+		return false;
+	}
+	public boolean replaceAtEnd(Object replaceItem, Object newItem){
+		if(this.Tail.getData() == replaceItem) {
+			this.Tail.setData(newItem);
+			return true;
+		}
+		Node temp = this.Tail.getNext();
+		while(temp != null ){
+			if(temp.getData() == replaceItem){
+				temp.setData(newItem); 
+				return true;
+			}   temp = temp.getPrev();
+		}
+		return false;
+	}
+	public boolean replaceAll(Object replaceItem, Object newItem){
+		Node temp = this.Head.getNext();
+		boolean isAllItemsReplaced = false;
+		while(temp != null ){
+			if(temp.getData() == replaceItem){
+				temp.setData(newItem);
+				isAllItemsReplaced = true;
+			}   temp = temp.getNext();
+		}
+		return isAllItemsReplaced;
+	}
+	private void delectHead(){
+		if(this.Head == this.Tail){
+			this.Head = null;
+			this.Tail = null;
+			this.length--;
+			return ;
+		}
+		this.Head = this.Head.getNext();
+		this.Head.setPrev(null);
+		this.length--;
+		
+	}
+	private void delectTail(){
+		if(this.Head == this.Tail){
+			this.Head = null;
+			this.Tail = null;
+			this.length--;
+			return ;
+		}
+		this.Tail = this.Tail.getPrev();
+		this.Tail.setNext(null);
+		this.length--;
+	}
+	public void deleteAt(int index){
+		if(this.length <= index)
+		{
+			try {
+				throw new IndexOutOfBound("Index can't be "+index);
+			} catch (IndexOutOfBound e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return ;
+		}	
+		
+		if(index == 0){
+			this.delectHead();
+			return ;
+		} else if(index == this.length-1){
+			this.delectTail();
+			return ;
+		}
+		
+		Node temp = this.Head.getNext();
+		
+		for(int ind=0; ind<index-1 && temp != null; ind++)
+			temp = temp.getNext();
+		if (temp == null)
+			return ;
+		temp.getPrev().setNext(temp.getNext());
+		temp.getNext().setPrev(temp.getPrev());
+		this.length--;
+	}
+	public void delete(Object item){
+		this.deleteAt(this.indexOf(item));
+	}
+	public void deleteAtEnd(Object item){
+		this.delete(this.lastIndexOf(item));
+	}
+	public void deleteAll(Object item){
+	
+		while(this.Head.toString().equals(item.toString())) {
+			this.delectHead();
+		} 
+		while(this.Tail.toString().equals(item.toString())) {
+			this.delectTail();
+		}
+		
+		for(Node temp=this.Head ;temp!=null ; temp=temp.getNext()){
+			if(temp.getNext().toString().equals(item.toString())){
+				
+				System.out.print(temp + " " +);
+				if(temp.getNext().getNext() != null)
+					System.out.println(temp.getNext().getNext());
+				//this.length--;
+			}
+			
+		}
+			
+	 
+	}
+	public boolean contains(Object item){
+		return false;	
+	}
+	public boolean containsAll(Object[] elements){
+		return false;
+	}
+	public void sort(){
+	
+	}
+	public void reversedSort(){
+		
+	}
+	public void swap(int index_i, int index_j){
+		
+	}
+	public void reversed(){
+		
+	}
+	public String toString(){
+		if (this.Head == null)
+			return null ;
+		if (this.Head.getNext() == null)
+			return this.Head.toString();
+		String Str = "[";
+		Node temp = this.Head; 
+		while (temp != null){
+			Str += temp.toString();
+			temp = temp.next;
+			if(temp != null)
+				Str += ", ";
+		} Str += "]";
+		return Str;	
+	}
+	public boolean isEmpty(){
+		return this.length == 0;
+	}
+
+	
+}

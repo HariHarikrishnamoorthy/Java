@@ -1,0 +1,5 @@
+package JAVA.util.Exception;
+
+public class IndexOutOfBound {
+
+}
